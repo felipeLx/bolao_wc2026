@@ -7,8 +7,8 @@
 /* ------------------------- CONFIGURAÇÃO ----------------------------- */
 // Edite aqui depois de criar o repositório no GitHub:
 const REPO = {
-  owner: "SEU_USUARIO",        // ex: "felipealves"
-  name: "bolao-copa-2026",     // nome do repositório
+  owner: "felipeLx",        // ex: "felipealves"
+  name: "bolao_wc2026",     // nome do repositório
   branch: "main",
 };
 
