@@ -299,6 +299,7 @@ async function enterPool(ev) {
     setSession(email, poolId);
     showMain();
   } catch (e) {
+    if (await recoverBadToken(e)) return enterPool(ev);
     msgEl.textContent = "Erro ao salvar: " + e.message;
   }
 }
@@ -318,14 +319,41 @@ function leavePool() {
 }
 
 /* ------------------------- TOKEN ------------------------------------- */
+// Testa se o token consegue ESCREVER no repositório (permissions.push).
+async function testToken(t) {
+  const r = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.name}?t=${Date.now()}`, {
+    headers: { Authorization: `Bearer ${t}`, Accept: "application/vnd.github+json" },
+  });
+  if (!r.ok) return { ok: false, why: `token recusado (HTTP ${r.status})` };
+  const j = await r.json();
+  if (!j.permissions?.push) {
+    return {
+      ok: false,
+      why: "este token não tem permissão de escrita. Ao criar, escolha " +
+        `"Only select repositories" → ${REPO.owner}/${REPO.name} e ` +
+        '"Contents: Read and write" (a opção "Public repositories" é só leitura).',
+    };
+  }
+  return { ok: true };
+}
+
 function ensureToken() {
   if (S.token) return Promise.resolve(true);
   return new Promise((resolve) => {
     $("#token-modal").hidden = false;
     $("#token-input").value = "";
-    $("#token-save").onclick = () => {
+    $("#token-msg").textContent = "";
+    $("#token-save").onclick = async () => {
       const t = $("#token-input").value.trim();
       if (!t) return;
+      $("#token-save").disabled = true;
+      $("#token-msg").textContent = "Testando a chave...";
+      const test = await testToken(t);
+      $("#token-save").disabled = false;
+      if (!test.ok) {
+        $("#token-msg").textContent = "Chave não funcionou: " + test.why;
+        return;
+      }
       S.token = t;
       localStorage.setItem("bolao.token", t);
       $("#token-modal").hidden = true;
@@ -336,6 +364,16 @@ function ensureToken() {
       resolve(false);
     };
   });
+}
+
+// Erro de autenticação no meio de um salvamento: descarta o token ruim
+// e abre o modal de novo. Retorna true se o usuário informou chave nova.
+async function recoverBadToken(e) {
+  if (![401, 403, 404].includes(e.status)) return false;
+  S.token = "";
+  localStorage.removeItem("bolao.token");
+  toast("Chave inválida ou expirada. Informe uma chave nova.", true);
+  return ensureToken();
 }
 
 function forgetToken() {
@@ -479,6 +517,11 @@ async function savePredictions() {
     toast("Palpites salvos! ✅");
     renderPalpites();
   } catch (e) {
+    if (await recoverBadToken(e)) {
+      btn.disabled = false;
+      btn.textContent = "Salvar palpites";
+      return savePredictions();
+    }
     toast("Erro ao salvar: " + e.message, true);
   } finally {
     btn.disabled = false;
@@ -607,6 +650,10 @@ async function saveResults() {
     toast("Resultados salvos! ✅");
     renderResultados();
   } catch (e) {
+    if (await recoverBadToken(e)) {
+      btn.disabled = false;
+      return saveResults();
+    }
     toast("Erro ao salvar: " + e.message, true);
     btn.disabled = false;
   }
