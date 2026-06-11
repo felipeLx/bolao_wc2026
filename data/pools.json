@@ -982,6 +982,18 @@
      }
     }
    }
+  },
+  "casinha-2026": {
+   "name": "Casinha 2026",
+   "createdBy": "andrevazmello@gmail.com",
+   "createdAt": "2026-06-11T21:51:11.691Z",
+   "members": {
+    "andrevazmello@gmail.com": {
+     "name": "Decoba",
+     "acceptedRulesAt": "2026-06-11T21:51:11.691Z",
+     "predictions": {}
+    }
+   }
   }
  }
 }
