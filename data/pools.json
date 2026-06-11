@@ -512,7 +512,28 @@
     "pardacento.dormente.8u@icloud.com": {
      "name": "Portugal",
      "acceptedRulesAt": "2026-06-10T14:52:37.656Z",
-     "predictions": {}
+     "predictions": {
+      "1": {
+       "h": 1,
+       "a": 0
+      },
+      "2": {
+       "h": 0,
+       "a": 0
+      },
+      "3": {
+       "h": 1,
+       "a": 1
+      },
+      "4": {
+       "h": 2,
+       "a": 2
+      },
+      "6": {
+       "h": 0,
+       "a": 1
+      }
+     }
     },
     "lbelaciano@yahoo.com.br": {
      "name": "Leo",
