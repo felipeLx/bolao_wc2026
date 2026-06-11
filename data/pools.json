@@ -991,7 +991,16 @@
     "andrevazmello@gmail.com": {
      "name": "Decoba",
      "acceptedRulesAt": "2026-06-11T21:51:11.691Z",
-     "predictions": {}
+     "predictions": {
+      "2": {
+       "h": 1,
+       "a": 1
+      },
+      "3": {
+       "h": 2,
+       "a": 1
+      }
+     }
     }
    }
   }
