@@ -1651,7 +1651,36 @@
     "nutricao.cynthia@gmail.com": {
      "name": "Cynthia",
      "acceptedRulesAt": "2026-06-11T22:05:18.440Z",
-     "predictions": {}
+     "predictions": {
+      "5": {
+       "h": 1,
+       "a": 0
+      },
+      "7": {
+       "h": 2,
+       "a": 1
+      },
+      "8": {
+       "h": 1,
+       "a": 1
+      },
+      "9": {
+       "h": 1,
+       "a": 2
+      },
+      "10": {
+       "h": 3,
+       "a": 0
+      },
+      "11": {
+       "h": 2,
+       "a": 0
+      },
+      "12": {
+       "h": 1,
+       "a": 0
+      }
+     }
     },
     "bentovazmello@gmail.com": {
      "name": "bitusso",
