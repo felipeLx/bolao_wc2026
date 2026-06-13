@@ -1702,7 +1702,12 @@
     "manuhowlett@icloud.com": {
      "name": "manu a vencedora",
      "acceptedRulesAt": "2026-06-13T20:09:41.042Z",
-     "predictions": {}
+     "predictions": {
+      "7": {
+       "h": 3,
+       "a": 2
+      }
+     }
     }
    }
   }
