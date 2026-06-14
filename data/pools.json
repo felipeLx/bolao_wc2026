@@ -1832,6 +1832,18 @@
      }
     }
    }
+  },
+  "limalisboa": {
+   "name": "LimaLisboa",
+   "createdBy": "felipealisboa@outlook.com",
+   "createdAt": "2026-06-14T15:59:46.351Z",
+   "members": {
+    "felipealisboa@outlook.com": {
+     "name": "Felipe Lisboa",
+     "acceptedRulesAt": "2026-06-14T15:59:46.351Z",
+     "predictions": {}
+    }
+   }
   }
  }
 }
