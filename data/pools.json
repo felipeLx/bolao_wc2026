@@ -2036,7 +2036,12 @@
      }
     }
    },
-   "payments": {},
+   "payments": {
+    "felipealisboa@outlook.com": {
+     "date": "2026-06-17T21:19:26.388Z",
+     "markedBy": "felipealisboa@outlook.com"
+    }
+   },
    "pixKey": "felipealisboa@outlook.com"
   },
   "casinha-2026": {
