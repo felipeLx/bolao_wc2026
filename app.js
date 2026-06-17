@@ -258,6 +258,10 @@ function setTab(tab) {
   if (tab === "classificacao") renderClassificacao();
   if (tab === "regras") renderRegras();
   if (tab === "resultados") renderResultados();
+  if (tab === "pagamentos") renderPagamentos();
+  // Hide floating bars from other tabs
+  if (tab !== "palpites") $("#save-bar").hidden = true;
+  if (tab !== "resultados") $("#results-save-bar").hidden = true;
 }
 
 /* ------------------------- ABA PALPITES ------------------------------ */
@@ -475,10 +479,17 @@ function renderResultados() {
       const a = card.querySelector('input[data-side="a"]').value;
       if (h === "" || a === "") delete S.dirtyResults[id];
       else S.dirtyResults[id] = { h: parseInt(h, 10) || 0, a: parseInt(a, 10) || 0 };
-      $("#results-save").disabled = Object.keys(S.dirtyResults).length === 0;
+      updateResultsSaveBar();
     });
   });
-  $("#results-save").disabled = true;
+  updateResultsSaveBar();
+}
+
+function updateResultsSaveBar() {
+  const n = Object.keys(S.dirtyResults).length;
+  $("#results-save-bar").hidden = n === 0;
+  $("#results-save").disabled = n === 0;
+  $("#results-dirty-count").textContent = n ? `${n} alteração(ões)` : "";
 }
 
 async function saveResults() {
@@ -517,6 +528,100 @@ async function syncResults() {
   } finally {
     btn.disabled = false;
     btn.textContent = "⚡ Buscar resultados da FIFA";
+  }
+}
+
+/* ------------------------- ABA PAGAMENTOS ----------------------------- */
+function renderPagamentos() {
+  const pool = S.pools.pools[S.poolId];
+  const payments = pool.payments || {};
+  const pixKey = pool.pixKey || "";
+  const admin = isAdmin();
+  const members = Object.entries(pool.members);
+  const paidCount = members.filter(([e]) => payments[e]).length;
+
+  let html = "";
+
+  // PIX info box
+  html += `<div class="panel" style="margin:0 0 16px">
+    <h3>💳 Como pagar</h3>
+    <p>Valor: <b>${ENTRY_FEE}</b> · Prazo: ${FEE_DEADLINE}</p>`;
+  if (pixKey) {
+    html += `<p>Chave PIX: <b class="pix-key">${esc(pixKey)}</b>
+      <button class="ghost small" onclick="navigator.clipboard.writeText('${esc(pixKey).replace(/'/g, "\\'")}').then(()=>toast('Chave copiada!'))">📋 Copiar</button></p>`;
+  } else if (admin) {
+    html += `<p class="muted">Nenhuma chave PIX cadastrada.</p>`;
+  } else {
+    html += `<p class="muted">O organizador ainda não cadastrou a chave PIX.</p>`;
+  }
+  if (admin) {
+    html += `<div style="margin-top:10px">
+      <label class="muted small">Chave PIX (visível para todos)</label>
+      <div style="display:flex;gap:8px">
+        <input id="pix-key-input" type="text" value="${esc(pixKey)}" placeholder="CPF, e-mail, telefone ou chave aleatória" style="flex:1">
+        <button id="pix-key-save" class="primary small">Salvar</button>
+      </div>
+    </div>`;
+  }
+  html += `</div>`;
+
+  // Payment status table
+  html += `<h3>Pagamentos (${paidCount}/${members.length})</h3>`;
+  html += `<table class="table"><thead><tr><th>Participante</th><th>Status</th>${admin ? "<th></th>" : ""}</tr></thead><tbody>`;
+  for (const [email, m] of members) {
+    const paid = payments[email];
+    const statusHtml = paid
+      ? `<span style="color:var(--accent)">✅ Pago${paid.date ? ` em ${new Date(paid.date).toLocaleDateString("pt-BR")}` : ""}</span>`
+      : `<span style="color:var(--red)">❌ Pendente</span>`;
+    const actionHtml = admin
+      ? `<td><button class="ghost small pay-toggle" data-email="${esc(email)}">${paid ? "Desfazer" : "Marcar pago"}</button></td>`
+      : "";
+    html += `<tr><td>${esc(m.name)}</td><td>${statusHtml}</td>${actionHtml}</tr>`;
+  }
+  html += `</tbody></table>`;
+
+  $("#pagamentos-content").innerHTML = html;
+
+  if (admin) {
+    $("#pix-key-save").addEventListener("click", savePixKey);
+    $$(".pay-toggle").forEach((btn) => {
+      btn.addEventListener("click", () => togglePayment(btn.dataset.email));
+    });
+  }
+}
+
+async function savePixKey() {
+  const key = $("#pix-key-input").value.trim();
+  try {
+    const resp = await api("payments", {
+      poolId: S.poolId,
+      email: S.email,
+      action: "set-pix",
+      pixKey: key,
+    });
+    S.pools = resp.pools;
+    toast("Chave PIX salva ✅");
+    renderPagamentos();
+  } catch (e) {
+    toast("Erro: " + e.message, true);
+  }
+}
+
+async function togglePayment(memberEmail) {
+  const pool = S.pools.pools[S.poolId];
+  const paid = !!(pool.payments?.[memberEmail]);
+  try {
+    const resp = await api("payments", {
+      poolId: S.poolId,
+      email: S.email,
+      action: paid ? "unmark" : "mark",
+      memberEmail,
+    });
+    S.pools = resp.pools;
+    toast(paid ? "Pagamento desmarcado" : "Pagamento confirmado ✅");
+    renderPagamentos();
+  } catch (e) {
+    toast("Erro: " + e.message, true);
   }
 }
 

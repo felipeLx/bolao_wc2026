@@ -85,6 +85,8 @@ button.ghost {
   padding: 7px 12px;
   font-size: 0.85rem;
 }
+button.small, .primary.small { padding: 7px 12px; font-size: 0.85rem; }
+.pix-key { font-family: monospace; background: var(--bg); padding: 4px 8px; border-radius: 6px; user-select: all; }
 
 .msg { color: var(--gold); min-height: 1.2em; margin: 8px 0 0; }
 .muted { color: var(--muted); }
@@ -179,7 +181,7 @@ input.score:disabled { background: transparent; border-color: transparent; }
 .card-bottom { font-size: 0.75rem; margin-top: 6px; }
 
 /* ---------- barra de salvar ---------- */
-#save-bar {
+#save-bar, .floating-bar {
   position: fixed;
   bottom: 0;
   left: 0;

@@ -7,6 +7,7 @@ import * as join from "../functions/api/join.js";
 import * as predictions from "../functions/api/predictions.js";
 import * as results from "../functions/api/results.js";
 import * as syncResults from "../functions/api/sync-results.js";
+import * as payments from "../functions/api/payments.js";
 
 const routes = {
   "GET /api/data": (ctx) => data.onRequestGet(ctx),
@@ -15,6 +16,7 @@ const routes = {
   "POST /api/results": (ctx) => results.onRequestPost(ctx),
   "GET /api/sync-results": (ctx) => syncResults.onRequestGet(ctx),
   "POST /api/sync-results": (ctx) => syncResults.onRequestPost(ctx),
+  "POST /api/payments": (ctx) => payments.onRequestPost(ctx),
 };
 
 export default {
