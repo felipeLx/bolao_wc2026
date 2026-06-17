@@ -2269,7 +2269,16 @@
     "bentovazmello@gmail.com": {
      "name": "bitusso",
      "acceptedRulesAt": "2026-06-11T22:27:01.733Z",
-     "predictions": {}
+     "predictions": {
+      "21": {
+       "h": 2,
+       "a": 1
+      },
+      "24": {
+       "h": 0,
+       "a": 2
+      }
+     }
     },
     "manuhowlett@icloud.com": {
      "name": "manu a vencedora",
