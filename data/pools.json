@@ -3303,6 +3303,18 @@
      }
     }
    }
+  },
+  "os-viciados": {
+   "name": "Os viciados",
+   "createdBy": "ggorayeb18@gmail.com",
+   "createdAt": "2026-06-17T17:37:35.682Z",
+   "members": {
+    "ggorayeb18@gmail.com": {
+     "name": "O Mestre",
+     "acceptedRulesAt": "2026-06-17T17:37:35.682Z",
+     "predictions": {}
+    }
+   }
   }
  }
 }
