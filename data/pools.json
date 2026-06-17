@@ -3524,7 +3524,16 @@
     "ggorayeb18@gmail.com": {
      "name": "O Mestre",
      "acceptedRulesAt": "2026-06-17T17:37:35.682Z",
-     "predictions": {}
+     "predictions": {
+      "21": {
+       "h": 2,
+       "a": 1
+      },
+      "24": {
+       "h": 0,
+       "a": 2
+      }
+     }
     },
     "carmenmadile@gmail.com": {
      "name": "CCM",
