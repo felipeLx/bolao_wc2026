@@ -4101,7 +4101,12 @@
     "sophiagorayeb22@gmail.com": {
      "name": "Sophia",
      "acceptedRulesAt": "2026-06-18T11:18:00.460Z",
-     "predictions": {}
+     "predictions": {
+      "25": {
+       "h": 0,
+       "a": 2
+      }
+     }
     }
    }
   }
