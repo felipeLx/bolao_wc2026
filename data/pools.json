@@ -4292,7 +4292,36 @@
     "carmenmadile@gmail.com": {
      "name": "CCM",
      "acceptedRulesAt": "2026-06-17T17:39:01.143Z",
-     "predictions": {}
+     "predictions": {
+      "25": {
+       "h": 2,
+       "a": 1
+      },
+      "26": {
+       "h": 1,
+       "a": 1
+      },
+      "27": {
+       "h": 2,
+       "a": 1
+      },
+      "28": {
+       "h": 1,
+       "a": 1
+      },
+      "29": {
+       "h": 1,
+       "a": 0
+      },
+      "30": {
+       "h": 0,
+       "a": 2
+      },
+      "32": {
+       "h": 2,
+       "a": 0
+      }
+     }
     },
     "kiko.lv.guerreiro@gmail.com": {
      "name": "PROFETA DO VAR",
