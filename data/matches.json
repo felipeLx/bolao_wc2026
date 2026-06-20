@@ -376,17 +376,6 @@
    "placeholder": false
   },
   {
-   "id": 36,
-   "stage": "Group Stage",
-   "group": "F",
-   "home": "Tunisia",
-   "away": "Japan",
-   "kickoff": "2026-06-21T04:00:00Z",
-   "venue": "Estadio BBVA",
-   "city": "Monterrey",
-   "placeholder": false
-  },
-  {
    "id": 34,
    "stage": "Group Stage",
    "group": "E",
@@ -395,6 +384,17 @@
    "kickoff": "2026-06-21T00:00:00Z",
    "venue": "Arrowhead Stadium",
    "city": "Kansas City",
+   "placeholder": false
+  },
+  {
+   "id": 36,
+   "stage": "Group Stage",
+   "group": "F",
+   "home": "Tunisia",
+   "away": "Japan",
+   "kickoff": "2026-06-21T04:00:00Z",
+   "venue": "Estadio BBVA",
+   "city": "Monterrey",
    "placeholder": false
   },
   {
