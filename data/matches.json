@@ -354,17 +354,6 @@
    "placeholder": false
   },
   {
-   "id": 36,
-   "stage": "Group Stage",
-   "group": "F",
-   "home": "Tunisia",
-   "away": "Japan",
-   "kickoff": "2026-06-20T04:00:00Z",
-   "venue": "Estadio BBVA",
-   "city": "Monterrey",
-   "placeholder": false
-  },
-  {
    "id": 35,
    "stage": "Group Stage",
    "group": "F",
@@ -428,6 +417,17 @@
    "kickoff": "2026-06-21T22:00:00Z",
    "venue": "Hard Rock Stadium",
    "city": "Miami",
+   "placeholder": false
+  },
+  {
+   "id": 36,
+   "stage": "Group Stage",
+   "group": "F",
+   "home": "Tunisia",
+   "away": "Japan",
+   "kickoff": "2026-06-21T04:00:00Z",
+   "venue": "Estadio BBVA",
+   "city": "Monterrey",
    "placeholder": false
   },
   {
