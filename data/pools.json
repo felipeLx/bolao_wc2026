@@ -4804,6 +4804,18 @@
      }
     }
    }
+  },
+  "tropa-da-sap": {
+   "name": "Tropa da sap",
+   "createdBy": "digo6462@gmail.com",
+   "createdAt": "2026-06-20T01:07:39.864Z",
+   "members": {
+    "digo6462@gmail.com": {
+     "name": "Digobrabo10",
+     "acceptedRulesAt": "2026-06-20T01:07:39.864Z",
+     "predictions": {}
+    }
+   }
   }
  }
 }
