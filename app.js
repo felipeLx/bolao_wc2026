@@ -443,6 +443,13 @@ function renderRegras() {
     <li>Palpites dos outros participantes só ficam visíveis depois que o jogo começa.</li>
     <li>Jogos do mata-mata abrem para palpite quando os confrontos forem definidos.</li>
   </ul>
+  <h3>Premiação</h3>
+  <p>Os 3 primeiros colocados recebem prêmios conforme definido pelo grupo.</p>
+  <ul>
+    <li>Primeiro: 70%</li>
+    <li>Segundo: 20%</li>
+    <li>Terceiro: 10%</li>
+  </ul>
   <h3>Inscrição</h3>
   <p>Cada participante se compromete a pagar <b>${ENTRY_FEE}</b> até ${FEE_DEADLINE}. Quem não pagar até o prazo é desclassificado.</p>
   <p>O prêmio total é dividido conforme combinado no grupo (padrão: leva tudo o 1º colocado).</p>`;
