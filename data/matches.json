@@ -1,5 +1,5 @@
 {
- "updated": "2026-05-25",
+ "updated": "2026-06-27",
  "matches": [
   {
    "id": 1,
@@ -797,73 +797,73 @@
    "id": 73,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group A Runner-up",
-   "away": "Group B Runner-up",
+   "home": "South Africa",
+   "away": "Canada",
    "kickoff": "2026-06-28T19:00:00Z",
    "venue": "SoFi Stadium",
    "city": "Los Angeles",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 76,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group C Winner",
-   "away": "Group F Runner-up",
+   "home": "Brazil",
+   "away": "Japan",
    "kickoff": "2026-06-29T17:00:00Z",
    "venue": "NRG Stadium",
    "city": "Houston",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 74,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group E Winner",
-   "away": "Group A/B/C/D/F 3rd Place",
+   "home": "Germany",
+   "away": "Paraguay",
    "kickoff": "2026-06-29T20:30:00Z",
    "venue": "Gillette Stadium",
    "city": "Boston",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 75,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group F Winner",
-   "away": "Group C Runner-up",
+   "home": "Netherlands",
+   "away": "Morocco",
    "kickoff": "2026-06-30T01:00:00Z",
    "venue": "Estadio BBVA",
    "city": "Monterrey",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 78,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group E Runner-up",
-   "away": "Group I Runner-up",
+   "home": "Côte d'Ivoire",
+   "away": "Norway",
    "kickoff": "2026-06-30T17:00:00Z",
    "venue": "AT&T Stadium",
    "city": "Dallas",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 77,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group I Winner",
-   "away": "Group C/D/F/G/H 3rd Place",
+   "home": "France",
+   "away": "Sweden",
    "kickoff": "2026-06-30T21:00:00Z",
    "venue": "MetLife Stadium",
    "city": "New York/New Jersey",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 79,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group A Winner",
+   "home": "Mexico",
    "away": "Group C/E/F/H/I 3rd Place",
    "kickoff": "2026-07-01T01:00:00Z",
    "venue": "Estadio Azteca",
@@ -885,7 +885,7 @@
    "id": 82,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group G Winner",
+   "home": "Belgium",
    "away": "Group A/E/H/I/J 3rd Place",
    "kickoff": "2026-07-01T20:00:00Z",
    "venue": "Lumen Field",
@@ -896,18 +896,18 @@
    "id": 81,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group D Winner",
-   "away": "Group B/E/F/I/J 3rd Place",
+   "home": "United States",
+   "away": "Bosnia and Herzegovina",
    "kickoff": "2026-07-02T00:00:00Z",
    "venue": "Levi's Stadium",
    "city": "San Francisco Bay Area",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 84,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group H Winner",
+   "home": "Spain",
    "away": "Group J Runner-up",
    "kickoff": "2026-07-02T19:00:00Z",
    "venue": "SoFi Stadium",
@@ -929,7 +929,7 @@
    "id": 85,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group B Winner",
+   "home": "Switzerland",
    "away": "Group E/F/G/I/J 3rd Place",
    "kickoff": "2026-07-03T03:00:00Z",
    "venue": "BC Place",
@@ -940,23 +940,23 @@
    "id": 88,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group D Runner-up",
-   "away": "Group G Runner-up",
+   "home": "Australia",
+   "away": "Egypt",
    "kickoff": "2026-07-03T18:00:00Z",
    "venue": "AT&T Stadium",
    "city": "Dallas",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 86,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group J Winner",
-   "away": "Group H Runner-up",
+   "home": "Argentina",
+   "away": "Cabo Verde",
    "kickoff": "2026-07-03T22:00:00Z",
    "venue": "Hard Rock Stadium",
    "city": "Miami",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 87,

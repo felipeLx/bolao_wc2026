@@ -62,7 +62,9 @@ function teamLabel(name) {
     .replace(/^Group (\w+) Runner-up$/, "2º do Grupo $1")
     .replace(/^Group ([\w/]+) 3rd Place$/, "3º (Grupos $1)")
     .replace(/^Winner Match (\d+)$/, "Vencedor do Jogo $1")
-    .replace(/^Loser Match (\d+)$/, "Perdedor do Jogo $1");
+    .replace(/^Match (\d+) Winner$/, "Vencedor do Jogo $1")
+    .replace(/^Loser Match (\d+)$/, "Perdedor do Jogo $1")
+    .replace(/^Match (\d+) Loser$/, "Perdedor do Jogo $1");
 }
 
 /* ------------------------- ESTADO ----------------------------------- */
