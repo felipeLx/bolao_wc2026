@@ -88,6 +88,31 @@ button.ghost {
 button.small, .primary.small { padding: 7px 12px; font-size: 0.85rem; }
 .pix-key { font-family: monospace; background: var(--bg); padding: 4px 8px; border-radius: 6px; user-select: all; }
 
+.pay-row {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+}
+.pay-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.pay-actions { display: flex; gap: 6px; align-items: center; }
+.proof-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px !important;
+  font-size: 0.9rem !important;
+}
+.pay-proof { margin-top: 8px; }
+.proof-thumb {
+  max-width: 120px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
 .msg { color: var(--gold); min-height: 1.2em; margin: 8px 0 0; }
 .muted { color: var(--muted); }
 .small { font-size: 0.85rem; }

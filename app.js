@@ -654,20 +654,31 @@ function renderPagamentos() {
   }
   html += `</div>`;
 
-  // Payment status table
+  // Payment status list
   html += `<h3>Pagamentos (${paidCount}/${members.length})</h3>`;
-  html += `<table class="table"><thead><tr><th>Participante</th><th>Status</th>${admin ? "<th></th>" : ""}</tr></thead><tbody>`;
   for (const [email, m] of members) {
     const paid = payments[email];
     const statusHtml = paid
       ? `<span style="color:var(--accent)">✅ Pago${paid.date ? ` em ${new Date(paid.date).toLocaleDateString("pt-BR")}` : ""}</span>`
       : `<span style="color:var(--red)">❌ Pendente</span>`;
-    const actionHtml = admin
-      ? `<td><button class="ghost small pay-toggle" data-email="${esc(email)}">${paid ? "Desfazer" : "Marcar pago"}</button></td>`
-      : "";
-    html += `<tr><td>${esc(m.name)}</td><td>${statusHtml}</td>${actionHtml}</tr>`;
+
+    html += `<div class="pay-row">
+      <div class="pay-row-top">
+        <span><b>${esc(m.name)}</b> ${statusHtml}</span>`;
+    if (admin) {
+      html += `<span class="pay-actions">
+        <button class="ghost small pay-toggle" data-email="${esc(email)}">${paid ? "Desfazer" : "Marcar pago"}</button>
+        <label class="ghost small proof-btn" style="cursor:pointer">📎
+          <input type="file" accept="image/*" class="proof-input" data-email="${esc(email)}" hidden>
+        </label>
+      </span>`;
+    }
+    html += `</div>`;
+    if (paid?.proof) {
+      html += `<div class="pay-proof"><img src="${paid.proof}" class="proof-thumb" data-email="${esc(email)}"></div>`;
+    }
+    html += `</div>`;
   }
-  html += `</tbody></table>`;
 
   $("#pagamentos-content").innerHTML = html;
 
@@ -676,7 +687,18 @@ function renderPagamentos() {
     $$(".pay-toggle").forEach((btn) => {
       btn.addEventListener("click", () => togglePayment(btn.dataset.email));
     });
+    $$(".proof-input").forEach((inp) => {
+      inp.addEventListener("change", (ev) => uploadProof(ev.target.dataset.email, ev.target.files[0]));
+    });
   }
+  $$(".proof-thumb").forEach((img) => {
+    img.addEventListener("click", () => {
+      const paid = payments[img.dataset.email];
+      if (!paid?.proof) return;
+      $("#member-detail").innerHTML = `<h3>Comprovante</h3><img src="${paid.proof}" style="width:100%;border-radius:8px">`;
+      $("#member-modal").hidden = false;
+    });
+  });
 }
 
 async function savePixKey() {
@@ -708,6 +730,47 @@ async function togglePayment(memberEmail) {
     });
     S.pools = resp.pools;
     toast(paid ? "Pagamento desmarcado" : "Pagamento confirmado ✅");
+    renderPagamentos();
+  } catch (e) {
+    toast("Erro: " + e.message, true);
+  }
+}
+
+function compressImage(file, maxW = 600) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.6));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadProof(memberEmail, file) {
+  if (!file) return;
+  toast("Comprimindo imagem...");
+  try {
+    const proof = await compressImage(file);
+    const resp = await api("payments", {
+      poolId: S.poolId,
+      email: S.email,
+      action: "set-proof",
+      memberEmail,
+      proof,
+    });
+    S.pools = resp.pools;
+    toast("Comprovante salvo ✅");
     renderPagamentos();
   } catch (e) {
     toast("Erro: " + e.message, true);

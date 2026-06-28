@@ -2,9 +2,10 @@ import { ghGetJson, mutateJson, json, err, requireToken, normEmail } from "./_li
 
 // POST /api/payments { poolId, email, action, ... }
 // Ações:
-//   "set-pix"  { pixKey }        — admin define a chave PIX do bolão
-//   "mark"     { memberEmail }   — admin marca pagamento de um membro
-//   "unmark"   { memberEmail }   — admin desmarca pagamento
+//   "set-pix"   { pixKey }                — admin define a chave PIX do bolão
+//   "mark"      { memberEmail }           — admin marca pagamento de um membro
+//   "unmark"    { memberEmail }           — admin desmarca pagamento
+//   "set-proof" { memberEmail, proof }    — admin anexa comprovante (base64 jpeg)
 export async function onRequestPost({ request, env }) {
   const missing = requireToken(env);
   if (missing) return missing;
@@ -42,6 +43,14 @@ export async function onRequestPost({ request, env }) {
         const me = normEmail(body.memberEmail);
         if (!me) throw Object.assign(new Error("E-mail inválido."), { user: true });
         delete pool.payments[me];
+      } else if (action === "set-proof") {
+        const me = normEmail(body.memberEmail);
+        if (!me) throw Object.assign(new Error("E-mail inválido."), { user: true });
+        const proof = String(body.proof || "");
+        if (!proof.startsWith("data:image/")) throw Object.assign(new Error("Imagem inválida."), { user: true });
+        if (proof.length > 200_000) throw Object.assign(new Error("Imagem muito grande (máx ~150KB)."), { user: true });
+        if (!pool.payments[me]) pool.payments[me] = { date: new Date().toISOString(), markedBy: email };
+        pool.payments[me].proof = proof;
       } else {
         throw Object.assign(new Error("Ação inválida."), { user: true });
       }
