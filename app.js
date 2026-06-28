@@ -513,20 +513,6 @@ function renderResultados() {
   }
   for (const match of startedMatches.reverse()) {
     const res = S.dirtyResults[match.id] ?? S.results.results[match.id];
-    const isKO = match.stage !== "Group Stage";
-    const isDraw = res && res.h != null && res.a != null && res.h === res.a;
-    let winnerHtml = "";
-    if (isKO && isDraw) {
-      const w = res.winner || "";
-      winnerHtml = `<div class="winner-pick" style="margin-top:6px;font-size:0.85rem">
-        <span class="muted">Quem avançou:</span>
-        <select class="winner-select" data-id="${match.id}" style="margin-left:6px">
-          <option value="">— selecione —</option>
-          <option value="${esc(match.home)}" ${w === match.home ? "selected" : ""}>${teamLabel(match.home)}</option>
-          <option value="${esc(match.away)}" ${w === match.away ? "selected" : ""}>${teamLabel(match.away)}</option>
-        </select>
-      </div>`;
-    }
     wrap.insertAdjacentHTML("beforeend", `
     <div class="card" data-id="${match.id}">
       <div class="card-top"><span class="stage">Jogo ${match.id} · ${STAGES[match.stage]}${match.group ? " · Grupo " + match.group : ""}</span></div>
@@ -537,7 +523,6 @@ function renderResultados() {
         <input class="score result" data-id="${match.id}" data-side="a" type="number" min="0" max="99" inputmode="numeric" value="${res?.a ?? ""}">
         <span class="team away">${teamLabel(match.away)}</span>
       </div>
-      ${winnerHtml}
     </div>`);
   }
   $$("#resultados-list input.result").forEach((inp) => {
@@ -547,24 +532,7 @@ function renderResultados() {
       const h = card.querySelector('input[data-side="h"]').value;
       const a = card.querySelector('input[data-side="a"]').value;
       if (h === "" || a === "") delete S.dirtyResults[id];
-      else {
-        const entry = { h: parseInt(h, 10) || 0, a: parseInt(a, 10) || 0 };
-        const ws = card.querySelector(".winner-select");
-        if (ws) entry.winner = ws.value;
-        S.dirtyResults[id] = entry;
-      }
-      updateResultsSaveBar();
-      renderResultados();
-    });
-  });
-  $$(".winner-select").forEach((sel) => {
-    sel.addEventListener("change", (ev) => {
-      const id = ev.target.dataset.id;
-      if (S.dirtyResults[id]) S.dirtyResults[id].winner = ev.target.value;
-      else {
-        const existing = S.results.results[id];
-        if (existing) S.dirtyResults[id] = { ...existing, winner: ev.target.value };
-      }
+      else S.dirtyResults[id] = { h: parseInt(h, 10) || 0, a: parseInt(a, 10) || 0 };
       updateResultsSaveBar();
     });
   });
