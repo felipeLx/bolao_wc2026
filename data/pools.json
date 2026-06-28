@@ -3800,7 +3800,12 @@
      }
     }
    },
-   "payments": {},
+   "payments": {
+    "felipealisboa@outlook.com": {
+     "date": "2026-06-28T12:38:06.851Z",
+     "markedBy": "felipealisboa@outlook.com"
+    }
+   },
    "pixKey": "felipealisboa@outlook.com"
   },
   "casinha-2026": {
