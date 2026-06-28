@@ -973,12 +973,12 @@
    "id": 90,
    "stage": "Round of 16",
    "group": null,
-   "home": "Match 73 Winner",
+   "home": "Canada",
    "away": "Match 75 Winner",
    "kickoff": "2026-07-04T17:00:00Z",
    "venue": "NRG Stadium",
    "city": "Houston",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 89,
