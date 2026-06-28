@@ -864,33 +864,33 @@
    "stage": "Round of 32",
    "group": null,
    "home": "Mexico",
-   "away": "Group C/E/F/H/I 3rd Place",
+   "away": "Ecuador",
    "kickoff": "2026-07-01T01:00:00Z",
    "venue": "Estadio Azteca",
    "city": "Mexico City",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 80,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group L Winner",
-   "away": "Group E/H/I/J/K 3rd Place",
+   "home": "England",
+   "away": "Congo DR",
    "kickoff": "2026-07-01T16:00:00Z",
    "venue": "Mercedes-Benz Stadium",
    "city": "Atlanta",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 82,
    "stage": "Round of 32",
    "group": null,
    "home": "Belgium",
-   "away": "Group A/E/H/I/J 3rd Place",
+   "away": "Senegal",
    "kickoff": "2026-07-01T20:00:00Z",
    "venue": "Lumen Field",
    "city": "Seattle",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 81,
@@ -908,33 +908,33 @@
    "stage": "Round of 32",
    "group": null,
    "home": "Spain",
-   "away": "Group J Runner-up",
+   "away": "Austria",
    "kickoff": "2026-07-02T19:00:00Z",
    "venue": "SoFi Stadium",
    "city": "Los Angeles",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 83,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group K Runner-up",
-   "away": "Group L Runner-up",
+   "home": "Portugal",
+   "away": "Croatia",
    "kickoff": "2026-07-02T23:00:00Z",
    "venue": "BMO Field",
    "city": "Toronto",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 85,
    "stage": "Round of 32",
    "group": null,
    "home": "Switzerland",
-   "away": "Group E/F/G/I/J 3rd Place",
+   "away": "Algeria",
    "kickoff": "2026-07-03T03:00:00Z",
    "venue": "BC Place",
    "city": "Vancouver",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 88,
@@ -962,12 +962,12 @@
    "id": 87,
    "stage": "Round of 32",
    "group": null,
-   "home": "Group K Winner",
-   "away": "Group D/E/I/J/L 3rd Place",
+   "home": "Colombia",
+   "away": "Ghana",
    "kickoff": "2026-07-04T01:30:00Z",
    "venue": "Arrowhead Stadium",
    "city": "Kansas City",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 90,
