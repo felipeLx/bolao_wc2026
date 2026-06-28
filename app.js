@@ -115,17 +115,15 @@ async function fetchStatic(path) {
 }
 
 async function loadAll() {
+  S.matches = (await fetchStatic("data/matches.json")).matches;
   try { S.config = await fetchStatic("data/config.json"); } catch { /* opcional */ }
 
   try {
     const d = await api("data");
     S.pools = d.pools;
     S.results = d.results;
-    if (d.matches?.matches) S.matches = d.matches.matches;
-    else S.matches = (await fetchStatic("data/matches.json")).matches;
   } catch (e) {
     console.warn("API indisponível, usando arquivos estáticos", e);
-    try { S.matches = (await fetchStatic("data/matches.json")).matches; } catch { /* */ }
     try { S.pools = await fetchStatic("data/pools.json"); } catch { /* primeiro uso */ }
     try { S.results = await fetchStatic("data/results.json"); } catch { /* primeiro uso */ }
   }
@@ -590,8 +588,7 @@ async function saveResults() {
     });
     S.results = resp.results;
     S.dirtyResults = {};
-    toast("Resultados salvos! ✅ Chave atualizada automaticamente.");
-    await loadAll();
+    toast("Resultados salvos! ✅");
     renderResultados();
   } catch (e) {
     toast("Erro ao salvar: " + e.message, true);
