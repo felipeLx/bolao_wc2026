@@ -115,17 +115,17 @@ async function fetchStatic(path) {
 }
 
 async function loadAll() {
-  S.matches = (await fetchStatic("data/matches.json")).matches;
   try { S.config = await fetchStatic("data/config.json"); } catch { /* opcional */ }
 
   try {
-    // Sempre fresco, direto do GitHub via servidor
     const d = await api("data");
     S.pools = d.pools;
     S.results = d.results;
+    if (d.matches?.matches) S.matches = d.matches.matches;
+    else S.matches = (await fetchStatic("data/matches.json")).matches;
   } catch (e) {
-    // Sem servidor (ex.: teste local com http.server): usa os arquivos publicados
     console.warn("API indisponível, usando arquivos estáticos", e);
+    try { S.matches = (await fetchStatic("data/matches.json")).matches; } catch { /* */ }
     try { S.pools = await fetchStatic("data/pools.json"); } catch { /* primeiro uso */ }
     try { S.results = await fetchStatic("data/results.json"); } catch { /* primeiro uso */ }
   }
@@ -258,7 +258,7 @@ function setTab(tab) {
   $$(".tab-panel").forEach((p) => (p.hidden = p.id !== "tab-" + tab));
   if (tab === "palpites") renderPalpites();
   if (tab === "classificacao") renderClassificacao();
-  if (tab === "regras") renderRegras();
+  if (tab === "chave") renderChave();
   if (tab === "resultados") renderResultados();
   if (tab === "pagamentos") renderPagamentos();
   // Hide floating bars from other tabs
@@ -426,35 +426,82 @@ function showMemberDetail(email) {
   $("#member-modal").hidden = false;
 }
 
-/* ------------------------- ABA REGRAS -------------------------------- */
-function renderRegras() {
-  $("#regras-content").innerHTML = `
-  <h3>Pontuação</h3>
-  <ul>
-    <li><b>${POINTS.exact} pontos</b> — acertou o <b>placar exato</b>.</li>
-    <li><b>${POINTS.diff} pontos</b> — acertou o vencedor (ou empate) <b>e o saldo de gols</b>, mas não o placar. <span class="muted">Ex.: palpite 3x1, jogo 2x0.</span></li>
-    <li><b>${POINTS.winner} pontos</b> — acertou <b>apenas o vencedor</b> (ou o empate). <span class="muted">Ex.: palpite 2x0, jogo 3x0.</span></li>
-    <li><b>0 ponto</b> — errou o resultado.</li>
-  </ul>
-  <h3>Desempate</h3>
-  <p>1º quem tiver mais pontos; 2º quem tiver mais placares exatos; persistindo, divide o prêmio.</p>
-  <h3>Palpites</h3>
-  <ul>
-    <li>Cada palpite pode ser alterado <b>até o horário do início do jogo</b>. Depois disso, fecha.</li>
-    <li>Jogo sem palpite vale 0 ponto.</li>
-    <li>Palpites dos outros participantes só ficam visíveis depois que o jogo começa.</li>
-    <li>Jogos do mata-mata abrem para palpite quando os confrontos forem definidos.</li>
-  </ul>
-  <h3>Premiação</h3>
-  <p>Os 3 primeiros colocados recebem prêmios conforme definido pelo grupo.</p>
-  <ul>
-    <li>Primeiro: 70%</li>
-    <li>Segundo: 20%</li>
-    <li>Terceiro: 10%</li>
-  </ul>
-  <h3>Inscrição</h3>
-  <p>Cada participante se compromete a pagar <b>${ENTRY_FEE}</b> até ${FEE_DEADLINE}. Quem não pagar até o prazo é desclassificado.</p>
-  <p>O prêmio total é dividido conforme combinado no grupo (padrão: leva tudo o 1º colocado).</p>`;
+/* ------------------------- ABA CHAVE (BRACKET) ----------------------- */
+const ROUND_ORDER = ["Round of 32", "Round of 16", "Quarter-finals", "Semi-finals", "Third Place", "Final"];
+
+function bracketMatch(match) {
+  const res = S.results.results[match.id];
+  const isKnockout = match.stage !== "Group Stage";
+  const homeIsReal = !!TEAMS[match.home];
+  const awayIsReal = !!TEAMS[match.away];
+
+  let winnerTeam = null;
+  if (res) {
+    if (res.winner) winnerTeam = res.winner;
+    else if (res.h > res.a) winnerTeam = match.home;
+    else if (res.a > res.h) winnerTeam = match.away;
+  }
+
+  const homeClass = winnerTeam === match.home ? "bracket-winner" :
+                    (winnerTeam && winnerTeam !== match.home ? "bracket-loser" : "");
+  const awayClass = winnerTeam === match.away ? "bracket-winner" :
+                    (winnerTeam && winnerTeam !== match.away ? "bracket-loser" : "");
+  const homeMuted = !homeIsReal ? "muted" : "";
+  const awayMuted = !awayIsReal ? "muted" : "";
+
+  const feedsInto = findNextMatch(match.id);
+  const feedsLabel = feedsInto ? `<span class="muted small">→ Jogo ${feedsInto}</span>` : "";
+
+  let scoreHtml = "";
+  if (res) {
+    scoreHtml = `<span class="bracket-score">${res.h} - ${res.a}${res.h === res.a && winnerTeam ? " (pen)" : ""}</span>`;
+  } else if (started(match) && !match.placeholder) {
+    scoreHtml = `<span class="bracket-score muted">em jogo</span>`;
+  } else {
+    const d = new Date(match.kickoff);
+    scoreHtml = `<span class="bracket-score muted">${fmtDay.format(d).split(",")[0]} ${fmtTime.format(d)}</span>`;
+  }
+
+  return `<div class="bracket-match${res ? " done" : ""}" data-id="${match.id}">
+    <div class="bracket-team ${homeClass} ${homeMuted}">
+      <span>${teamLabel(match.home)}</span>
+      ${res ? `<span class="bracket-goals">${res.h}</span>` : ""}
+    </div>
+    <div class="bracket-team ${awayClass} ${awayMuted}">
+      <span>${teamLabel(match.away)}</span>
+      ${res ? `<span class="bracket-goals">${res.a}</span>` : ""}
+    </div>
+    <div class="bracket-info">${scoreHtml} ${feedsLabel}</div>
+  </div>`;
+}
+
+function findNextMatch(matchId) {
+  const winLabel = `Match ${matchId} Winner`;
+  const m = S.matches.find((mm) => mm.home === winLabel || mm.away === winLabel);
+  return m ? m.id : null;
+}
+
+function renderChave() {
+  const knockout = S.matches.filter((m) => m.stage !== "Group Stage");
+  const byRound = {};
+  for (const m of knockout) {
+    (byRound[m.stage] = byRound[m.stage] || []).push(m);
+  }
+
+  let html = "";
+  for (const round of ROUND_ORDER) {
+    const matches = byRound[round];
+    if (!matches) continue;
+    matches.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff));
+    const done = matches.filter((m) => S.results.results[m.id]).length;
+    html += `<h3 class="day-header">${STAGES[round]} <span class="muted small">(${done}/${matches.length})</span></h3>`;
+    html += `<div class="bracket-round">`;
+    for (const match of matches) {
+      html += bracketMatch(match);
+    }
+    html += `</div>`;
+  }
+  $("#chave-content").innerHTML = html;
 }
 
 /* ------------------------- ABA RESULTADOS (ADMIN) --------------------- */
@@ -468,6 +515,20 @@ function renderResultados() {
   }
   for (const match of startedMatches.reverse()) {
     const res = S.dirtyResults[match.id] ?? S.results.results[match.id];
+    const isKO = match.stage !== "Group Stage";
+    const isDraw = res && res.h != null && res.a != null && res.h === res.a;
+    let winnerHtml = "";
+    if (isKO && isDraw) {
+      const w = res.winner || "";
+      winnerHtml = `<div class="winner-pick" style="margin-top:6px;font-size:0.85rem">
+        <span class="muted">Quem avançou:</span>
+        <select class="winner-select" data-id="${match.id}" style="margin-left:6px">
+          <option value="">— selecione —</option>
+          <option value="${esc(match.home)}" ${w === match.home ? "selected" : ""}>${teamLabel(match.home)}</option>
+          <option value="${esc(match.away)}" ${w === match.away ? "selected" : ""}>${teamLabel(match.away)}</option>
+        </select>
+      </div>`;
+    }
     wrap.insertAdjacentHTML("beforeend", `
     <div class="card" data-id="${match.id}">
       <div class="card-top"><span class="stage">Jogo ${match.id} · ${STAGES[match.stage]}${match.group ? " · Grupo " + match.group : ""}</span></div>
@@ -478,6 +539,7 @@ function renderResultados() {
         <input class="score result" data-id="${match.id}" data-side="a" type="number" min="0" max="99" inputmode="numeric" value="${res?.a ?? ""}">
         <span class="team away">${teamLabel(match.away)}</span>
       </div>
+      ${winnerHtml}
     </div>`);
   }
   $$("#resultados-list input.result").forEach((inp) => {
@@ -487,7 +549,24 @@ function renderResultados() {
       const h = card.querySelector('input[data-side="h"]').value;
       const a = card.querySelector('input[data-side="a"]').value;
       if (h === "" || a === "") delete S.dirtyResults[id];
-      else S.dirtyResults[id] = { h: parseInt(h, 10) || 0, a: parseInt(a, 10) || 0 };
+      else {
+        const entry = { h: parseInt(h, 10) || 0, a: parseInt(a, 10) || 0 };
+        const ws = card.querySelector(".winner-select");
+        if (ws) entry.winner = ws.value;
+        S.dirtyResults[id] = entry;
+      }
+      updateResultsSaveBar();
+      renderResultados();
+    });
+  });
+  $$(".winner-select").forEach((sel) => {
+    sel.addEventListener("change", (ev) => {
+      const id = ev.target.dataset.id;
+      if (S.dirtyResults[id]) S.dirtyResults[id].winner = ev.target.value;
+      else {
+        const existing = S.results.results[id];
+        if (existing) S.dirtyResults[id] = { ...existing, winner: ev.target.value };
+      }
       updateResultsSaveBar();
     });
   });
@@ -511,7 +590,8 @@ async function saveResults() {
     });
     S.results = resp.results;
     S.dirtyResults = {};
-    toast("Resultados salvos! ✅");
+    toast("Resultados salvos! ✅ Chave atualizada automaticamente.");
+    await loadAll();
     renderResultados();
   } catch (e) {
     toast("Erro ao salvar: " + e.message, true);

@@ -59,16 +59,19 @@
   <nav class="tabs">
     <button class="tab-btn active" data-tab="palpites">Palpites</button>
     <button class="tab-btn" data-tab="classificacao">Classificação</button>
-    <!--<button class="tab-btn" data-tab="pagamentos">Pago</button>-->
-    <button class="tab-btn" data-tab="regras">Regras</button>
+    <button class="tab-btn" data-tab="chave">Chave</button>
+    <button class="tab-btn" data-tab="pagamentos">Pago</button>
     <button class="tab-btn" data-tab="resultados" id="tab-btn-resultados" hidden>Resultados</button>
   </nav>
 
   <div id="tab-palpites" class="tab-panel">
-    <label class="checkbox filter">
-      <input id="filter-all" type="checkbox">
-      <span>Mostrar todos os jogos (inclusive fechados e a definir)</span>
-    </label>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <label class="checkbox filter" style="margin:10px 0">
+        <input id="filter-all" type="checkbox">
+        <span>Mostrar todos os jogos (inclusive fechados e a definir)</span>
+      </label>
+      <a href="regras.html" target="_blank" class="muted small" style="white-space:nowrap;margin-left:8px">📋 Regras</a>
+    </div>
     <div id="palpites-list"></div>
     <div id="save-bar" hidden>
       <button id="save-btn" class="primary">Salvar palpites</button>
@@ -80,8 +83,8 @@
     <div id="classificacao-content"></div>
   </div>
 
-  <div id="tab-regras" class="tab-panel" hidden>
-    <div id="regras-content"></div>
+  <div id="tab-chave" class="tab-panel" hidden>
+    <div id="chave-content"></div>
   </div>
 
   <div id="tab-resultados" class="tab-panel" hidden>
