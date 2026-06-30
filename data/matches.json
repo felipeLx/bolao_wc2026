@@ -1006,56 +1006,56 @@
    "id": 92,
    "stage": "Round of 16",
    "group": null,
-   "home": "Match 79 Winner",
-   "away": "Match 80 Winner",
+   "home": "Mexico / Ecuador",
+   "away": "England / Congo DR",
    "kickoff": "2026-07-06T00:00:00Z",
    "venue": "Estadio Azteca",
    "city": "Mexico City",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 93,
    "stage": "Round of 16",
    "group": null,
-   "home": "Match 83 Winner",
-   "away": "Match 84 Winner",
+   "home": "Portugal / Croatia",
+   "away": "Spain / Austria",
    "kickoff": "2026-07-06T19:00:00Z",
    "venue": "AT&T Stadium",
    "city": "Dallas",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 94,
    "stage": "Round of 16",
    "group": null,
-   "home": "Match 81 Winner",
-   "away": "Match 82 Winner",
+   "home": "United States / Bosnia and Herzegovina",
+   "away": "Belgium / Senegal",
    "kickoff": "2026-07-07T00:00:00Z",
    "venue": "Lumen Field",
    "city": "Seattle",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 95,
    "stage": "Round of 16",
    "group": null,
-   "home": "Match 86 Winner",
-   "away": "Match 88 Winner",
+   "home": "Argentina / Cabo Verde",
+   "away": "Australia / Egypt",
    "kickoff": "2026-07-07T16:00:00Z",
    "venue": "Mercedes-Benz Stadium",
    "city": "Atlanta",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 96,
    "stage": "Round of 16",
    "group": null,
-   "home": "Match 85 Winner",
-   "away": "Match 87 Winner",
+   "home": "Switzerland / Algeria",
+   "away": "Colombia / Ghana",
    "kickoff": "2026-07-07T20:00:00Z",
    "venue": "BC Place",
    "city": "Vancouver",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 97,
