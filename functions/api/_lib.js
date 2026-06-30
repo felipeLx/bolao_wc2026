@@ -4,6 +4,24 @@
 
 const GH = "https://api.github.com";
 
+function bytesToBase64(bytes) {
+  const chunkSize = 0x8000;
+  const chunks = [];
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    chunks.push(String.fromCharCode(...bytes.subarray(i, i + chunkSize)));
+  }
+  return btoa(chunks.join(""));
+}
+
+function base64ToBytes(base64) {
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) {
+    bytes[i] = bin.charCodeAt(i);
+  }
+  return bytes;
+}
+
 export function repoCfg(env) {
   return {
     owner: env.REPO_OWNER || "felipeLx",
@@ -32,18 +50,15 @@ export async function ghGetJson(env, path) {
     throw Object.assign(new Error(`GitHub GET ${path}: ${r.status}`), { status: r.status });
   }
   const j = await r.json();
-  const bin = atob(j.content.replace(/\n/g, ""));
-  const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+  const bytes = base64ToBytes(j.content.replace(/\n/g, ""));
   return { data: JSON.parse(new TextDecoder().decode(bytes)), sha: j.sha };
 }
 
 export async function ghPutJson(env, path, data, sha, message) {
   const { owner, name, branch } = repoCfg(env);
   const bytes = new TextEncoder().encode(JSON.stringify(data, null, 1));
-  let bin = "";
-  bytes.forEach((b) => (bin += String.fromCharCode(b)));
   // "[CI Skip]" impede que cada palpite dispare um novo deploy no Cloudflare Pages
-  const body = { message: `[CI Skip] ${message}`, content: btoa(bin), branch };
+  const body = { message: `[CI Skip] ${message}`, content: bytesToBase64(bytes), branch };
   if (sha) body.sha = sha;
   const r = await fetch(`${GH}/repos/${owner}/${name}/contents/${path}`, {
     method: "PUT",
