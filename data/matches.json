@@ -1066,7 +1066,7 @@
    "kickoff": "2026-07-09T20:00:00Z",
    "venue": "Gillette Stadium",
    "city": "Boston",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 98,
@@ -1077,7 +1077,7 @@
    "kickoff": "2026-07-10T19:00:00Z",
    "venue": "SoFi Stadium",
    "city": "Los Angeles",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 99,
@@ -1088,7 +1088,7 @@
    "kickoff": "2026-07-11T21:00:00Z",
    "venue": "Hard Rock Stadium",
    "city": "Miami",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 100,
@@ -1099,7 +1099,7 @@
    "kickoff": "2026-07-12T01:00:00Z",
    "venue": "Arrowhead Stadium",
    "city": "Kansas City",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 101,
@@ -1110,7 +1110,7 @@
    "kickoff": "2026-07-14T19:00:00Z",
    "venue": "AT&T Stadium",
    "city": "Dallas",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 102,
@@ -1121,7 +1121,7 @@
    "kickoff": "2026-07-15T19:00:00Z",
    "venue": "Mercedes-Benz Stadium",
    "city": "Atlanta",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 103,
@@ -1132,7 +1132,7 @@
    "kickoff": "2026-07-18T21:00:00Z",
    "venue": "Hard Rock Stadium",
    "city": "Miami",
-   "placeholder": true
+   "placeholder": false
   },
   {
    "id": 104,
@@ -1143,7 +1143,7 @@
    "kickoff": "2026-07-19T19:00:00Z",
    "venue": "MetLife Stadium",
    "city": "New York/New Jersey",
-   "placeholder": true
+   "placeholder": false
   }
  ]
 }
