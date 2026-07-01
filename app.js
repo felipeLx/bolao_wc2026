@@ -142,16 +142,17 @@ function scorePrediction(pred, res) {
 
 function standings(pool) {
   const rows = Object.entries(pool.members).map(([email, m]) => {
-    let pts = 0, exact = 0, winners = 0, played = 0;
+    let pts = 0, exact = 0, diff = 0, winners = 0, played = 0;
     for (const [id, res] of Object.entries(S.results.results)) {
       const p = scorePrediction(m.predictions?.[id], res);
       if (p === null) continue;
       played++;
       pts += p;
       if (p === POINTS.exact) exact++;
-      if (p > 0) winners++;
+      else if (p === POINTS.diff) diff++;
+      else if (p === POINTS.winner) winners++;
     }
-    return { email, name: m.name || email, pts, exact, winners, played };
+    return { email, name: m.name || email, pts, exact, diff, winners, played };
   });
   rows.sort((a, b) => b.pts - a.pts || b.exact - a.exact || a.name.localeCompare(b.name));
   return rows;
@@ -386,11 +387,11 @@ function renderClassificacao() {
   const rows = standings(pool);
   const hasResults = Object.keys(S.results.results).length > 0;
   let html = `<table class="table">
-    <thead><tr><th>#</th><th>Participante</th><th>Pts</th><th title="placares exatos">🎯</th><th title="acertos (vencedor)">✔</th></tr></thead><tbody>`;
+    <thead><tr><th>#</th><th>Participante</th><th>Pts</th><th title="placar exato (10 pts)">10</th><th title="saldo de gols (7 pts)">7</th><th title="acertou vencedor (5 pts)">5</th></tr></thead><tbody>`;
   rows.forEach((r, i) => {
     const youCls = r.email === S.email ? ' class="you"' : "";
     html += `<tr${youCls} data-email="${esc(r.email)}">
-      <td>${i + 1}º</td><td>${esc(r.name)}</td><td><b>${r.pts}</b></td><td>${r.exact}</td><td>${r.winners}</td></tr>`;
+      <td>${i + 1}º</td><td>${esc(r.name)}</td><td><b>${r.pts}</b></td><td>${r.exact}</td><td>${r.diff}</td><td>${r.winners}</td></tr>`;
   });
   html += "</tbody></table>";
   if (!hasResults) html += '<p class="muted">A classificação aparece conforme os resultados forem lançados.</p>';
