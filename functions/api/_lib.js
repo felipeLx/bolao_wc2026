@@ -39,19 +39,39 @@ function ghHeaders(env) {
   };
 }
 
+async function ghGetBlobText(env, sha) {
+  const { owner, name } = repoCfg(env);
+  const r = await fetch(`${GH}/repos/${owner}/${name}/git/blobs/${sha}`, {
+    headers: ghHeaders(env),
+  });
+  if (!r.ok) {
+    throw Object.assign(new Error(`GitHub BLOB ${sha}: ${r.status}`), { status: r.status });
+  }
+  const j = await r.json();
+  const bytes = base64ToBytes(j.content.replace(/\n/g, ""));
+  return new TextDecoder().decode(bytes);
+}
+
 export async function ghGetJson(env, path) {
   const { owner, name, branch } = repoCfg(env);
   const r = await fetch(
     `${GH}/repos/${owner}/${name}/contents/${path}?ref=${branch}&t=${Date.now()}`,
-    { headers: ghHeaders(env) },
+    {
+      headers: {
+        ...ghHeaders(env),
+        Accept: "application/vnd.github.object+json",
+      },
+    },
   );
   if (r.status === 404) return { data: null, sha: null };
   if (!r.ok) {
     throw Object.assign(new Error(`GitHub GET ${path}: ${r.status}`), { status: r.status });
   }
   const j = await r.json();
-  const bytes = base64ToBytes(j.content.replace(/\n/g, ""));
-  return { data: JSON.parse(new TextDecoder().decode(bytes)), sha: j.sha };
+  const text = j.encoding === "base64" && j.content
+    ? new TextDecoder().decode(base64ToBytes(j.content.replace(/\n/g, "")))
+    : await ghGetBlobText(env, j.sha);
+  return { data: JSON.parse(text), sha: j.sha };
 }
 
 export async function ghPutJson(env, path, data, sha, message) {
