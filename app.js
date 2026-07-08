@@ -75,7 +75,7 @@ const S = {
   config: { admins: [] },
   email: localStorage.getItem("bolao.email") || "",
   poolId: localStorage.getItem("bolao.pool") || "",
-  dirty: {},            // palpites alterados e não salvos {matchId: {h,a}}
+  dirty: {},            // palpites alterados e não salvos {matchId: {h,a,q?}}
   dirtyResults: {},     // resultados alterados (admin)
   tab: "palpites",
 };
@@ -131,13 +131,34 @@ async function loadAll() {
 
 /* ------------------------- PONTUAÇÃO -------------------------------- */
 function scorePrediction(pred, res) {
-  if (!pred || !res) return null;
+  if (!pred || !res || !Number.isInteger(pred.h) || !Number.isInteger(pred.a)) return null;
   if (pred.h === res.h && pred.a === res.a) return POINTS.exact;
   const pSign = Math.sign(pred.h - pred.a);
   const rSign = Math.sign(res.h - res.a);
   if (pSign !== rSign) return 0;
   if (pred.h - pred.a === res.h - res.a) return POINTS.diff;
   return POINTS.winner;
+}
+
+function buildDirtyPrediction(card, includeQuestionState = false) {
+  const id = card.dataset.id;
+  const existingDirty = S.dirty[id] || {};
+  const next = {};
+
+  const hInput = card.querySelector('input[data-side="h"]');
+  const aInput = card.querySelector('input[data-side="a"]');
+  if (hInput && aInput && hInput.value !== "" && aInput.value !== "") {
+    next.h = Math.max(0, parseInt(hInput.value, 10) || 0);
+    next.a = Math.max(0, parseInt(aInput.value, 10) || 0);
+  }
+
+  const questionInput = card.querySelector("input.prediction-question");
+  if (questionInput) {
+    if (questionInput.checked) next.q = 1;
+    else if (includeQuestionState || existingDirty.q === 0) next.q = 0;
+  }
+
+  return Object.keys(next).length ? next : null;
 }
 
 function standings(pool) {
@@ -298,6 +319,9 @@ function renderPalpites() {
   $$("#palpites-list input.score").forEach((inp) => {
     inp.addEventListener("input", onPredictionInput);
   });
+  $$("#palpites-list input.prediction-question").forEach((inp) => {
+    inp.addEventListener("change", onPredictionQuestionInput);
+  });
   updateSaveBar();
 }
 
@@ -314,6 +338,11 @@ function matchCard(match, member) {
   else badge = `<span class="badge open">aberto até ${fmtTime.format(new Date(match.kickoff))}</span>`;
 
   const stageLabel = STAGES[match.stage] + (match.group ? ` · Grupo ${match.group}` : "");
+  const questionHtml = match.checkboxQuestion ? `
+    <label class="card-bottom">
+      <input class="prediction-question" data-id="${match.id}" type="checkbox" ${locked ? "disabled" : ""} ${pred?.q === 1 ? "checked" : ""}>
+      ${esc(match.checkboxQuestion)}
+    </label>` : "";
 
   return `<div class="card ${locked ? "locked" : ""}" data-id="${match.id}">
     <div class="card-top">
@@ -329,20 +358,26 @@ function matchCard(match, member) {
              inputmode="numeric" ${locked ? "disabled" : ""} value="${pred?.a ?? ""}">
       <span class="team away">${teamLabel(match.away)}</span>
     </div>
+    ${questionHtml}
     <div class="card-bottom muted">${fmtTime.format(new Date(match.kickoff))} (Brasília) · ${esc(match.venue)}, ${esc(match.city)}</div>
   </div>`;
 }
 
 function onPredictionInput(ev) {
-  const id = ev.target.dataset.id;
   const card = ev.target.closest(".card");
-  const h = card.querySelector('input[data-side="h"]').value;
-  const a = card.querySelector('input[data-side="a"]').value;
-  if (h === "" || a === "") {
-    delete S.dirty[id];
-  } else {
-    S.dirty[id] = { h: Math.max(0, parseInt(h, 10) || 0), a: Math.max(0, parseInt(a, 10) || 0) };
-  }
+  const id = card.dataset.id;
+  const next = buildDirtyPrediction(card);
+  if (next) S.dirty[id] = next;
+  else delete S.dirty[id];
+  updateSaveBar();
+}
+
+function onPredictionQuestionInput(ev) {
+  const card = ev.target.closest(".card");
+  const id = card.dataset.id;
+  const next = buildDirtyPrediction(card, true);
+  if (next) S.dirty[id] = next;
+  else delete S.dirty[id];
   updateSaveBar();
 }
 
@@ -385,6 +420,7 @@ function renderClassificacao() {
   const pool = S.pools.pools[S.poolId];
   const rows = standings(pool);
   const hasResults = Object.keys(S.results.results).length > 0;
+  const questionMatches = S.matches.filter((match) => match.checkboxQuestion);
   let html = `<table class="table">
     <thead><tr><th>#</th><th>Participante</th><th>Pts</th><th title="placar exato (10 pts)">10</th><th title="saldo de gols (7 pts)">7</th><th title="acertou vencedor (5 pts)">5</th></tr></thead><tbody>`;
   rows.forEach((r, i) => {
@@ -393,6 +429,12 @@ function renderClassificacao() {
       <td>${i + 1}º</td><td>${esc(r.name)}</td><td><b>${r.pts}</b></td><td>${r.exact}</td><td>${r.diff}</td><td>${r.winners}</td></tr>`;
   });
   html += "</tbody></table>";
+  questionMatches.forEach((match) => {
+    const checked = Object.values(pool.members)
+      .filter((member) => member.predictions?.[match.id]?.q === 1)
+      .map((member) => esc(member.name));
+    html += `<div class="mini-row"><span><b>${esc(match.checkboxQuestion)}</b></span><span class="muted">${checked.length ? checked.join(", ") : "Ninguem marcou ainda."}</span></div>`;
+  });
   if (!hasResults) html += '<p class="muted">A classificação aparece conforme os resultados forem lançados.</p>';
   html += '<p class="muted">Toque em um participante para ver os palpites dele (só de jogos já iniciados).</p>';
   $("#classificacao-content").innerHTML = html;
@@ -408,9 +450,14 @@ function showMemberDetail(email) {
   let html = `<h3>Palpites de ${esc(m.name)}</h3>`;
   let any = false;
   for (const match of S.matches) {
+    if (!match.checkboxQuestion || m.predictions?.[match.id]?.q !== 1) continue;
+    any = true;
+    html += `<div class="mini-row"><span>${esc(match.checkboxQuestion)}</span><span class="muted">marcou sim</span></div>`;
+  }
+  for (const match of S.matches) {
     if (!started(match)) continue; // não mostra palpites de jogos futuros (anti-cola)
     const pred = m.predictions?.[match.id];
-    if (!pred) continue;
+    if (!pred || !Number.isInteger(pred.h) || !Number.isInteger(pred.a)) continue;
     any = true;
     const res = S.results.results[match.id];
     const pts = scorePrediction(pred, res);
